@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subatomic - Integrated Code Editor</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo"><a href="Test.com - Home.html">Subatomic</a></div>
+    <nav class="nav-links">
+      <a href="Test.com - Home.html">Home</a>
+      <a href="Test.com - FFC.html">File Format Changer</a>
+      <a href="Test.com - ICE - HTML.html" class="active">Integrated Code Editor (HTML)</a>
+      <a href="Test.com - ICE - Python.html">Integrated Code Editor (Python)</a>
+      <a href="301.html">About</a>
+      <a href="301.html">Contact</a>
+    </nav>
+  </header>
+
+  <div class="ice-container">
+    <!-- Code Input Panel -->
+    <div class="panel">
+      <div class="panel-title">Source Code (HTML/CSS/JS)</div>
+      <textarea id="code-input" placeholder="Type your HTML here..." spellcheck="false"><!-- Write your code here -->
+<h1>Hello, World!</h1>
+<p>Change this text to see real-time updates.</p>
+
+<style>
+    h1 { color: #007acc; font-family: sans-serif; }
+    p { color: #333; font-style: italic; }
+</style>
+
+<script>
+    console.log('Code editor is running smoothly!');
+</script></textarea>
+    </div>
+
+    <div class="divider"></div>
+
+      <!-- Live Preview Panel -->
+      <div class="panel">
+        <div class="panel-title">Live Preview</div>
+        <iframe id="preview-window"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 Subatomic. All rights reserved.
+  </footer>
+
+  <script>
+    const codeInput = document.getElementById('code-input');
+    const previewWindow = document.getElementById('preview-window');
+
+    function updatePreview() {
+      const code = codeInput.value;
+      const targetDocument = previewWindow.contentDocument || previewWindow.contentWindow.document;
+
+      targetDocument.open();
+      targetDocument.write(code);
+      targetDocument.close();
+    }
+
+    // Debounce helper function
+    function debounce(func, delay = 300) {
+      let timeoutId;
+      return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func(...args), delay);
+      };
+    }
+
+    // Run immediately on page load
+    updatePreview();
+
+    // Listen for typing events with a 300ms debounce delay
+    codeInput.addEventListener('input', debounce(updatePreview, 300));
+  </script>
+
+  <!-- Python Execution Script -->
+  <script>
+    const outputBox = document.getElementById('output-box');
+    const runBtn = document.getElementById('run-btn');
+    const pythonCode = document.getElementById('python-code');
+    let pyodideInstance = null;
+
+    // Initialize Pyodide engine
+    async function initPyodide() {
+      try {
+        pyodideInstance = await loadPyodide();
+        outputBox.innerHTML = '<span class="info">Python 3 Engine Ready! 🚀 Click "Run Code" to execute.</span>';
+        runBtn.textContent = "▶ Run Code";
+        runBtn.disabled = false;
+      } catch (err) {
+        outputBox.innerHTML = `<span class="error">Failed to load Python engine: ${err.message}</span>`;
+      }
+    }
+
+    initPyodide();
+
+    // Run Python Code
+    runBtn.addEventListener('click', async () => {
+      if (!pyodideInstance) return;
+
+      outputBox.innerHTML = '';
+      
+      // Redirect stdout and stderr to JavaScript
+      pyodideInstance.setStdout({
+        batched: (str) => { outputBox.innerText += str + '\n'; }
+      });
+      pyodideInstance.setStderr({
+        batched: (str) => {
+          const errSpan = document.createElement('span');
+          errSpan.className = 'error';
+          errSpan.innerText = str + '\n';
+          outputBox.appendChild(errSpan);
+        }
+      });
+
+      try {
+        await pyodideInstance.runPythonAsync(pythonCode.value);
+      } catch (err) {
+        const errSpan = document.createElement('span');
+        errSpan.className = 'error';
+        errSpan.innerText = err.message;
+        outputBox.appendChild(errSpan);
+      }
+    });
+  </script>
+</body>
+</html>

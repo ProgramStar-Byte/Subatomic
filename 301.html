@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="5;url=Test.com - Home.html">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>301 Redirect — Subatomic</title>
+    <style>
+        body {
+            font-family: "Montserrat", sans-serif;
+            background-color: #0a0c10;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .parent-container {
+            display: grid;
+            place-items: center;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #30852d, #00ff66, #30852d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            font-family: "JetBrains Mono", monospace;
+            margin-bottom: 10px;
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        p {
+            text-align: center;
+            color: #ffffff;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        a {
+            display: inline-block;
+            background-color: #30852d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            font-family: "Lexend", monospace;
+            margin: auto;
+            margin-bottom: 10px;
+        }
+
+        a:hover {
+            background-color: #256d25;
+        }
+
+    </style>
+</head>
+<body>
+    <main>
+    <div class="parent-container">
+        <h1>Subatomic</h1>
+        <p>This page has been permanently moved to a new location or is under development. You will be redirected shortly.</p>
+        <a href="#" id="refreshBTN"> Refresh The Page </a>
+        <a href="Test.com - Home.html">Not redirected? Click Me!</a>
+        <p style="font-size: 10px; color: darkslategray;">
+            Redirecting in <span id="countdown">5</span> seconds...
+        </p>
+    </div>
+    </main>
+
+    <script>
+        const reloadBtn = document.getElementById("refreshBTN");
+        const countdownElement = document.getElementById("countdown");
+
+        let countdown = 5;
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = "Test.com - Home.html";
+            }
+        }, 1000);
+
+        reloadBtn.addEventListener("click", () => {
+            window.location.reload();
+        });
+
+    </script>
+</body>
+</html>

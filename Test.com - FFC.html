@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subatomic - File Format Changer</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo"><a href="Test.com - Home.html">Subatomic</a></div>
+    <nav class="nav-links">
+      <a href="Test.com - Home.html">Home</a>
+      <a href="Test.com - FFC.html" class="active">File Format Changer</a>
+      <a href="Test.com - ICE - HTML.html">Integrated Code Editor (HTML)</a>
+      <a href="Test.com - ICE - Python.html">Integrated Code Editor (Python)</a>
+      <a href="301.html">About</a>
+      <a href="301.html">Contact</a>
+    </nav>
+  </header>
+
+  <main class="ffc-container">
+    <div class="drop-zone" id="drop-zone">
+      <h2>Drag and drop your image files here!</h2>
+      <p>Supports PNG, JPG, WEBP, and BMP</p>
+      
+      <input type="file" id="file-input" accept="image/*" hidden>
+      <button type="button" onclick="document.getElementById('file-input').click()">Browse File</button>
+
+      <div class="file-info" id="file-info">
+        <p><strong>Selected File:</strong> <span id="file-name">None</span></p>
+      </div>
+
+      <div class="controls">
+        <label for="format-select">Convert to:</label>
+        <select id="format-select">
+          <option value="image/jpeg">JPEG (.jpg)</option>
+          <option value="image/png">PNG (.png)</option>
+          <option value="image/webp">WEBP (.webp)</option>
+        </select>
+        <button id="convert-btn" disabled>Change Format</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>&copy; 2026 Subatomic. All rights reserved.</footer>
+
+  <script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const fileNameDisplay = document.getElementById('file-name');
+    const fileInfo = document.getElementById('file-info');
+    const convertBtn = document.getElementById('convert-btn');
+    const formatSelect = document.getElementById('format-select');
+
+    let loadedImage = null;
+    let selectedFile = null;
+
+    // Prevent the browser from opening dropped files directly.
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
+      dropZone.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); });
+    });
+
+    ['dragenter', 'dragover'].forEach((eventName) => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'));
+    });
+    ['dragleave', 'drop'].forEach((eventName) => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'));
+    });
+
+    dropZone.addEventListener('drop', (event) => {
+      const files = event.dataTransfer.files;
+      if (files.length) handleFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', (event) => {
+      if (event.target.files.length) handleFile(event.target.files[0]);
+    });
+
+    // Process uploaded file
+    function handleFile(file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+      }
+      selectedFile = file;
+      fileNameDisplay.textContent = file.name;
+      fileInfo.style.display = 'block';
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        loadedImage = new Image();
+        loadedImage.onload = () => { convertBtn.disabled = false; };
+        loadedImage.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Convert and trigger download via Canvas
+    convertBtn.addEventListener('click', () => {
+      if (!loadedImage) return;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = loadedImage.width;
+      canvas.height = loadedImage.height;
+
+      const ctx = canvas.getContext('2d');
+      // Set white background for translucent PNGs converted to JPEG
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(loadedImage, 0, 0);
+
+      const targetMime = formatSelect.value;
+      const extension = targetMime.split('/')[1];
+      const newFileName = selectedFile.name.substring(0, selectedFile.name.lastIndexOf('.')) + '.' + extension;
+
+      const convertedDataUrl = canvas.toDataURL(targetMime, 0.92);
+
+      // Trigger automatic file download
+      const downloadLink = document.createElement('a');
+      downloadLink.href = convertedDataUrl;
+      downloadLink.download = newFileName;
+      downloadLink.click();
+    });
+  </script>
+
+</body>
+</html>
