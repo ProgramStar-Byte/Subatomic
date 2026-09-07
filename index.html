@@ -9,9 +9,11 @@
 </head>
 <body>
   <header class="navbar">
-    <div class="logo"><a href="index.html">Subatomic</a></div>
+    <div class="logo"><a href="Test.com - Home.html">Subatomic</a></div>
     <nav class="nav-links">
-      <a href="index.html" class="active">Home</a>
+      <a href="Test.com - Home.html" class="active">Home</a>
+      <a href="Test.com - Stocks.html">Sub.stocks</a>
+      <a href="Test.com - Learn.html">Sub.learn</a>
       <a href="Test.com - FFC.html">File Format Changer</a>
       <a href="Test.com - ICE - HTML.html">Integrated Code Compiler (HTML)</a>
       <a href="Test.com - ICE - Python.html">Integrated Code Editor (Python)</a>
@@ -97,16 +99,53 @@
 
     <section>
       <h2>Subscribe to Our Updates Newsletter</h2>
-      <form class="newsletter-form">
-        <input type="email" placeholder="Enter your email" required />
-        <button type="submit">Subscribe</button>
+      <form id="newsletter-form">
+        <input type="text" id="subscriber-name" placeholder="Enter your name!" required />
+        <input type="email" id="subscriber-email" placeholder="Enter your email!" required />
+        <input type="text" id="subscriber-preference" style="width: 45%;" placeholder="Which one Stocks or Code/AI/ML updates?" />
+        <button type="submit" id="submit-btn" style="margin-top: 5.5px;">Subscribe</button>
       </form>
+      <p id="subscription-status"></p>
     </section>
   </main>
 
   <footer>
-    &copy; 2026 Subatomic. All rights reserved.
+    &copy; 2026 Subatomic. All rights reserved <br> Contact — <a href="mailto:info.subatomic@gmail.com">info.subatomic@gmail.com</a>.
   </footer>
+
+  <script>
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx8mnBO5ci3S_cHCMqRJSv7EoQL47T_87W-uQ0RV2PcGbVkO6japCFUO-HV3m43RahQtA/exec';
+
+  document.getElementById('newsletter-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const statusText = document.getElementById('subscription-status');
+    const nameVal = document.getElementById('subscriber-name').value;
+    const emailVal = document.getElementById('subscriber-email').value;
+    const preferenceVal = document.getElementById('subscriber-preference').value;
+
+    statusText.innerText = 'Subscribing...';
+
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          name: nameVal, 
+          email: emailVal,
+          preference: preferenceVal
+        })
+      });
+
+      statusText.innerText = 'Subscription submitted successfully!';
+      this.reset();
+    } catch (err) {
+      statusText.innerText = 'Failed to submit. Check console for details.';
+      console.error(err);
+    }
+  });
+  </script>
 
 </body>
 </html>
