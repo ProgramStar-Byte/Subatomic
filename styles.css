@@ -282,7 +282,10 @@
       color: #ffffff;
       border: none;
       padding: 0.3rem 0.8rem;
-      margin-left: 19rem;
+      margin-right: 0.5rem;
+      margin-left: 24rem;
+      margin-top: 0.5px;
+      margin-bottom: 0.5px;
       border-radius: 4px;
       font-weight: 600;
       font-size: 0.75rem;
@@ -290,7 +293,7 @@
       font-family: Lexend, sans-serif;
     }
     .run-btn:hover { background-color: #2ea043; }
-    .run-btn:disabled { background-color: #30363d; color: #8b949e; cursor: wait; margin-left: 17rem; }
+    .run-btn:disabled { background-color: #30363d; color: #8b949e; cursor: wait; margin-left: 22rem; }
 
     /* Textarea & Terminal Output */
     textarea {
